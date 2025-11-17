@@ -1,0 +1,41 @@
+import re
+tf1 = "TF22_1.txt"
+tf2 = "TF22_2.txt"
+sample_lines = [
+    "Аня пішла до магазину, купила яблук, апельсинів та бананів.",
+    "Це простий приклад: слова різної-довжини, з пунктуацією!",
+    "Програмування — цікаве й корисне.",
+    "Слово з_підкресленням не вважається.",
+    "Найдовше_слово_без_а має бути ігнороване.",
+    "Аналізатор шукає слова з літерами а або А."
+]
+with open(tf1, "w", encoding="utf-8") as f:
+    for line in sample_lines:
+        f.write(line + "\n")
+try:
+    with open(tf1, "r", encoding="utf-8") as f:
+        text = f.read()
+except Exception as e:
+    print("Помилка при відкритті файлу TF22_1:", e)
+    raise SystemExit
+words = re.findall(r"[^\W_]+", text, flags=re.UNICODE)
+words_with_a = [w for w in words if "а" in w.lower()]
+try:
+    with open(tf2, "w", encoding="utf-8") as out:
+        if not words_with_a:
+            out.write("У файлі TF22_1 немає слів, що містять символ 'а'.\n")
+        else:
+            max_len = max(len(w) for w in words_with_a)
+            longest = [w for w in words_with_a if len(w) == max_len]
+            for w in longest:
+                out.write(w + "\n")
+except Exception as e:
+    print("Помилка при записі до TF22_2:", e)
+    raise SystemExit
+try:
+    with open(tf2, "r", encoding="utf-8") as f:
+        for line in f:
+            print(line.rstrip())
+except Exception as e:
+    print("Помилка при відкритті TF22_2 для читання:", e)
+    raise SystemExit
